@@ -1,5 +1,30 @@
 {% extends "network/layout.html" %}
+{% load static %}
+
+<!-- {% block script %}    
+<script src="{% static 'network/js/main.js' %}"></script>
+{% endblock %} -->
 
 {% block body %}
-    
+    <div class="messages-container text-center">
+        {% for message in messages %}
+            <span class="{{ message.tags }}-color">{{ message }}</span>
+        {% endfor %}
+    </div>
+    <div id="posts-page" class="page-wrapper">
+        <h1>All Posts</h1>
+        <!-- NEW POST STARTS -->
+        <div class="new-post-container width-100 flex-container vertical-row">
+            <h3>New Post</h3>
+            <form action="{% url 'new-post' %}" method="post">
+                {% csrf_token %}
+                <div class="flex-container vertical-row">
+                    <input type="hidden" id="new-post-userID" name="new-post-userID" value="{{ user.id }}" />
+                    <textarea id="new-post-text" name="new-post-text" placeholder="Write a new post..." autofocus></textarea>
+                    <input type="submit" value="New Post" class="button" />
+                </div>
+            </form>
+        </div>
+        <!-- NEW POST ENDS -->
+    </div>
 {% endblock %}

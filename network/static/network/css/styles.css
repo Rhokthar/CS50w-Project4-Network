@@ -1,0 +1,29 @@
+/* VARS */
+:root {
+    --error-color: red;
+    --success-color: green;
+}
+
+
+/* GENERAL RULES STARTS */
+body a {
+    font-size: 1.7rem;
+}
+/* GENERAL RULES ENDS */
+
+
+/* LAYOUT RULES STARTS */
+.navbar-brand {
+    font-size: 2.2rem;
+}
+/* LAYOUT RULES ENDS */
+
+
+/* MESSAGES COLORS STARTS */
+.success-color {
+    color: var(--success-color);
+}
+.error-color {
+    color: var(--error-color);
+}
+/* MESSAGES COLORS ENDS */
