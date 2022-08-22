@@ -6,28 +6,29 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous" />
         
         <!-- CSS -->
-        <link href="{% static 'network/main-rules.css' %}" rel="stylesheet" />
-        <link href="{% static 'network/styles.css' %}" rel="stylesheet" />
-
+        <link href="{% static 'network/css/main-rules.css' %}" rel="stylesheet" />
+        <link href="{% static 'network/css/styles.css' %}" rel="stylesheet" />
+        
         <!-- JS -->
+        {% block script %}{% endblock %}
     </head>
     <body>
-
+        <!-- NAVBAR STARTS -->
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="#">Network</a>  
+            <a class="navbar-brand" href="{% url 'index' %}">Network</a>  
             <div>
-              <ul class="navbar-nav mr-auto">
+            <ul class="navbar-nav mr-auto">
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><strong>{{ user.username }}</strong></a>
+                        <a id="profile-page-link" class="nav-link" href="#"><strong>{{ user.username }}</strong></a>
                     </li>
                 {% endif %}
                 <li class="nav-item">
-                  <a class="nav-link" href="{% url 'index' %}">All Posts</a>
+                <a id="posts-page-link" class="nav-link" href="{% url 'index' %}">All Posts</a>
                 </li>
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Following</a>
+                        <a id="following-page-link" class="nav-link" href="#">Following</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
@@ -40,13 +41,16 @@
                         <a class="nav-link" href="{% url 'register' %}">Register</a>
                     </li>
                 {% endif %}
-              </ul>
+            </ul>
             </div>
-          </nav>
-        
-        <div class="body">
+        </nav>
+        <!-- NAVBAR ENDS -->
+
+        <!-- BODY DIV STARTS -->
+        <div class="body boxed-container margin-left-auto margin-right-auto">
             {% block body %}
             {% endblock %}
         </div>
+        <!-- BODY DIV ENDS -->
     </body>
 </html>
