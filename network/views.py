@@ -92,3 +92,23 @@ def all_posts(request):
     posts = Post.objects.all().order_by("-creation_date")
     return JsonResponse([post.post_view() for post in posts], safe=False)
 # ALL POSTS VIEW ENDS
+
+
+# PROFILE VIEW STARTS
+@login_required(login_url="login")
+def profile(request, profile_username):
+    user = User.objects.get(username=profile_username)
+    if (user != None):
+        userPosts = Post.objects.filter(user=user)
+        print(userPosts)
+
+        return render(request, "network/profile.html", {
+            "username": profile_username,
+            "followers": user.followers,
+            "following": user.following,
+            "posts": userPosts
+        })
+    else:
+        messages.error(request, "Profile not found")
+        return render(request, "network/profile.html")
+# PROFILE VIEW ENDS

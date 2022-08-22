@@ -1,6 +1,4 @@
-document.addEventListener("DOMContentLoaded", function() {
-    AllPostsDisplayer();
-});
+document.addEventListener("DOMContentLoaded", AllPostsDisplayer());
 
 function AllPostsDisplayer()
 {

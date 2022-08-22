@@ -1,0 +1,36 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+    <!-- MESSAGES DISPLAYER STARTS -->
+    <div class="messages-wrapper text-center">
+        {% for message in messages %}
+        <span class="{{ message.tags}}-color">{{ message }}</span>
+        {% endfor %}
+    </div>
+    <!-- MESSAGES DISPLAYER ENDS -->
+
+    <!-- PROFILE PAGE CONTENT STARTS -->
+    <div id="profile-page" class="page-wrapper">
+        <!-- Profile Username -->
+        <h1> {{ username }}</h1>
+        
+        <!-- Followers & Following -->
+        <div id="followers-following">
+            <span>Follower Count: {{ followers }}</span>
+            <span>Following: {{ following }}</span>
+        </div>
+
+        <!-- User Posts -->
+        <div id="user-posts">
+            {% for post in posts %}
+            <div class="user-post">{{ post }}</div>
+            {% endfor %}
+        </div>
+        
+        
+        <!-- FOLLOW/UNFOLLOW BUTTON -->
+    </div> <!-- PROFILE PAGE CONTENT ENDS -->
+{% endblock %}
