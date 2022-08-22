@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.http import JsonResponse
 
 from .models import *
 
@@ -69,13 +70,12 @@ def register(request):
 @login_required(login_url="login")
 def new_post(request):
     # Vars
-    userID = request.POST["new-post-userID"]
     postContent = request.POST["new-post-text"]
     
     # Check Passed Values
-    if userID != None and postContent != None:
+    if postContent != None:
         # Try Create Post
-        user = User.objects.get(id=userID)
+        user = User.objects.get(id=request.user.id)
         Post.objects.create(user=user, post_content=postContent)
         messages.success(request, "Post created successfully!")
         return HttpResponseRedirect(reverse("index"))
@@ -83,3 +83,12 @@ def new_post(request):
         messages.error(request, "Can't submit a blank post!")
         return HttpResponseRedirect(reverse("index"))
 # NEW POST VIEW ENDS
+
+
+# ALL POSTS VIEW STARTS
+@login_required(login_url="login")
+def all_posts(request):
+    # Return all Posts in Inverse Chrono-Order
+    posts = Post.objects.all().order_by("-creation_date")
+    return JsonResponse([post.post_view() for post in posts], safe=False)
+# ALL POSTS VIEW ENDS

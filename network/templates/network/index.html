@@ -13,18 +13,24 @@
     </div>
     <div id="posts-page" class="page-wrapper">
         <h1>All Posts</h1>
+
         <!-- NEW POST STARTS -->
         <div class="new-post-container width-100 flex-container vertical-row">
             <h3>New Post</h3>
             <form action="{% url 'new-post' %}" method="post">
                 {% csrf_token %}
                 <div class="flex-container vertical-row">
-                    <input type="hidden" id="new-post-userID" name="new-post-userID" value="{{ user.id }}" />
                     <textarea id="new-post-text" name="new-post-text" placeholder="Write a new post..." autofocus></textarea>
                     <input type="submit" value="New Post" class="button" />
                 </div>
             </form>
         </div>
         <!-- NEW POST ENDS -->
+
+        <!-- ALL POSTS VISUALIZATION STARTS -->
+        <div id="all-posts" class="flex-container vertical-row width-100">
+
+        </div>
+        <!-- ALL POSTS VISUALIZATION ENDS -->
     </div>
 {% endblock %}
