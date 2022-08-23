@@ -10,7 +10,7 @@ function AllPostsDisplayer()
             postDiv.classList.add("post");
 
             postDiv.innerHTML = `
-                <h4>${post.user}</h4>
+                <h4><a href="profile/${post.user}">${post.user}</a></h4>
                 <p>${post.post_content}</p>
                 <span>${post.creation_date}</span>
                 <span>Likes: ${post.likes}</span>
