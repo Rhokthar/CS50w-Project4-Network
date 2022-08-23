@@ -1,17 +1,23 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-
+# Users Table
 class User(AbstractUser):
     followers_list = models.ManyToManyField("User", default=None, blank=True, related_name="followers")
     following_list = models.ManyToManyField("User", default=None, blank=True, related_name="following")
+    liked_posts = models.ManyToManyField("Post", default=None, blank=True, related_name="liked_posts")
 
     def show_followers(self):
-        return "\n".join([follower.username for follower in self.followers_list.all()])
+        return ", ".join([follower.username for follower in self.followers_list.all()])
     
     def show_following(self):
-        return "\n".join([following.username for following in self.following_list.all()])
+        return ", ".join([following.username for following in self.following_list.all()])
 
+    def show_liked_posts(self):
+        return ", ".join([str(liked_post.id) for liked_post in self.liked_posts.all()])
+
+
+# Posts Table
 class Post(models.Model):
     # ID
     user = models.ForeignKey(User, on_delete=models.CASCADE, default=None)

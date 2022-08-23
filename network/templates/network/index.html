@@ -31,11 +31,12 @@
                 <p class="post-content">{{ post.post_content }}</p>
                 <textarea class="edit-post-text" name="edit-post-text">{{ post.post_content }}</textarea>
                 <span>{{ post.creation_date }}</span>
-                <span>Likes: {{ post.likes }}</span>
+                <span class="likes">Likes: {{ post.likes }}</span>
                 {% if post.user.username == user.username %}
                     <button class="edit-btn" value="{{ post.id }}">Edit</button>
                     <button class="save-edit-btn" value="{{ post.id }}">Save</button>
                 {% endif %}
+                <button class="like-btn" value="{{ post.id }}">{% if post in user_liked_posts %}Unlike{% else %}Like{% endif %}</button>
             </div>
             {% endfor %}
 

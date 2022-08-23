@@ -14,15 +14,27 @@ from .utils import *
 
 @login_required(login_url='login')
 def index(request):
-    # Return all Posts in Inverse Chrono-Order
+    # Check for User
+    try:
+        user = User.objects.get(id=request.user.id)
+    except:
+        messages.error(request, "User not found")
+    
+    # Check for Post
     try:
         posts = Post.objects.all().order_by("-creation_date")
+    except:
+        messages.error(request, "Post not found")
+    
+    # Return all Posts in Inverse Chrono-Order
+    try:
         postsPaginator = Paginator(posts, 10)
         pageNumber = request.GET.get("page")
         postsPage = postsPaginator.get_page(pageNumber)
 
         return render(request, "network/index.html", {
-            "page": postsPage
+            "page": postsPage,
+            "user_liked_posts": user.liked_posts.all()
         })
     except:
         messages.error(request, "Something went wrong")
@@ -180,10 +192,52 @@ def edit_post(request, post_ID):
         return JsonResponse(post.serialize())
 
     # Update Post Content
-    if request.method == "PUT":
+    elif request.method == "PUT":
         data = json.loads(request.body)
         if data.get("post_content") is not None:
             post.post_content = data["post_content"]
         post.save()
         return HttpResponse(status=204)
 # EDIT-POST VIEW ENDS
+
+
+# LIKE-POST VIEW STARTS
+@csrf_exempt
+@login_required(login_url="login")
+def like_post(request, post_ID):
+    try:
+        post = Post.objects.get(id=post_ID)
+    except:
+        messages.error(request, "Post not found")
+        return HttpResponseRedirect(reverse("index"))
+    
+    if request.method == "GET":
+        return JsonResponse(post.serialize())
+    
+    elif request.method == "PUT":
+        # Get User
+        try:
+            likingUser = User.objects.get(id=request.user.id)
+        except:
+            messages.error(request, "User not found")
+            return HttpResponseRedirect(reverse("index"))
+
+        # Get All Post Liked by User
+        likedPosts = likingUser.liked_posts.all()
+
+        # If Post Already Liked
+        if post in likedPosts and len(likedPosts) > 0:
+            # Remove Like & Post Liked by User
+            post.likes -= 1
+            likingUser.liked_posts.remove(post)
+
+        else:
+            # Add Like & Post Liked by User
+            post.likes += 1
+            likingUser.liked_posts.add(post)
+        
+        # Save Updates
+        post.save()
+        likingUser.save()
+        return HttpResponse(status=204)
+# LIKE-POST VIEW ENDS
