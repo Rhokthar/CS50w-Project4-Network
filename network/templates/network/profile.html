@@ -1,5 +1,4 @@
 {% extends "network/layout.html" %}
-{% load static %}
 
 {% block title %}{% endblock %}
 
@@ -15,21 +14,38 @@
     <!-- PROFILE PAGE CONTENT STARTS -->
     <div id="profile-page" class="page-wrapper">
         <!-- Profile Username -->
-        <h1> {{ username }}</h1>
+        <h1> {{ username }} </h1>
         
         <!-- Followers & Following -->
         <div id="followers-following">
-            <span>Follower Count: {{ followers }}</span>
-            <span>Following: {{ following }}</span>
+            <span>Followers: {{ followers.count }}</span>
+            <span>Following: {{ following.count }}</span>
         </div>
 
         <!-- User Posts -->
         <div id="user-posts">
+            <h2>{{ username }} Posts</h2>
             {% for post in posts %}
-            <div class="user-post">{{ post }}</div>
+            <div class="user-post">
+                <h4>{{ post.user.username }}</h4>
+                <p>{{ post.post_content }}</p>
+                <span>{{ post.creation_date }}</span>
+                <span>Likes: {{ post.likes }}</span>
+            </div>
             {% endfor %}
         </div>
-        
+        {% if user.username != username %}
+            <form action="/profile/{{ username }}" method="post">
+                {% csrf_token %}
+                <button id="follow-unfollow-btn">
+                    {% if follow_status %}
+                        Unfollow
+                    {% else %}
+                        Follow
+                    {% endif %}
+                </button>
+            </form>
+        {% endif %}
         
         <!-- FOLLOW/UNFOLLOW BUTTON -->
     </div> <!-- PROFILE PAGE CONTENT ENDS -->

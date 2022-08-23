@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.http import JsonResponse
 
 from .models import *
+from .utils import *
 
 @login_required(login_url='login')
 def index(request):
@@ -89,26 +90,57 @@ def new_post(request):
 @login_required(login_url="login")
 def all_posts(request):
     # Return all Posts in Inverse Chrono-Order
-    posts = Post.objects.all().order_by("-creation_date")
-    return JsonResponse([post.post_view() for post in posts], safe=False)
+    try:
+        posts = Post.objects.all().order_by("-creation_date")
+        return JsonResponse([post.post_view() for post in posts], safe=False)
+    except:
+        messages.error(request, "Something went wrong")
+        return HttpResponseRedirect(reverse("index"))
 # ALL POSTS VIEW ENDS
 
 
 # PROFILE VIEW STARTS
 @login_required(login_url="login")
 def profile(request, profile_username):
-    user = User.objects.get(username=profile_username)
-    if (user != None):
-        userPosts = Post.objects.filter(user=user)
-        print(userPosts)
-
-        return render(request, "network/profile.html", {
-            "username": profile_username,
-            "followers": user.followers,
-            "following": user.following,
-            "posts": userPosts
-        })
-    else:
+    # Vars
+    profileVisitedUser = User.objects.get(username=profile_username)
+    visitingUser = User.objects.get(username=request.user.username)
+    userPosts = Post.objects.filter(user=profileVisitedUser).order_by("-creation_date")
+    followStatus = IsFollower(request, profileVisitedUser)
+    
+    # Check if Users Exists
+    if (profileVisitedUser == None or visitingUser == None):
         messages.error(request, "Profile not found")
         return render(request, "network/profile.html")
+
+    # Method -> Get -> Show Stuff
+    if request.method == "GET":        
+        return render(request, "network/profile.html", {
+            "username": profile_username,
+            "followers": profileVisitedUser.followers_list,
+            "following": profileVisitedUser.following_list,
+            "posts": userPosts,
+            "follow_status": followStatus
+        })
+    
+    # Method -> POST -> Follow/Unfollow Clicked
+    else:
+        # Not a Follower
+        if not followStatus:
+            profileVisitedUser.followers_list.add(visitingUser)
+            visitingUser.following_list.add(profileVisitedUser)
+
+            profileVisitedUser.save()
+            visitingUser.save()
+            messages.success(request, f"{profile_username} followed successfully!")
+        # A Follower
+        else:
+            profileVisitedUser.followers_list.remove(visitingUser)
+            visitingUser.following_list.remove(profileVisitedUser)
+            
+            profileVisitedUser.save()
+            visitingUser.save()
+            messages.success(request, f"{profile_username} unfollowed successfully!")
+       
+        return HttpResponseRedirect(reverse("profile", kwargs={"profile_username": profile_username}))
 # PROFILE VIEW ENDS

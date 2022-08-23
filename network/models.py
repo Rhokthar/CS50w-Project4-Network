@@ -3,9 +3,14 @@ from django.db import models
 
 
 class User(AbstractUser):
-    followers = models.IntegerField(default=0)
-    following = models.IntegerField(default=0)
-    pass
+    followers_list = models.ManyToManyField("User", default=None, blank=True, related_name="followers")
+    following_list = models.ManyToManyField("User", default=None, blank=True, related_name="following")
+
+    def show_followers(self):
+        return "\n".join([follower.username for follower in self.followers_list.all()])
+    
+    def show_following(self):
+        return "\n".join([following.username for following in self.following_list.all()])
 
 class Post(models.Model):
     # ID
