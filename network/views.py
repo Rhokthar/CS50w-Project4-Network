@@ -12,7 +12,19 @@ from .utils import *
 
 @login_required(login_url='login')
 def index(request):
-    return render(request, "network/index.html")
+    # Return all Posts in Inverse Chrono-Order
+    try:
+        posts = Post.objects.all().order_by("-creation_date")
+        postsPaginator = Paginator(posts, 10)
+        pageNumber = request.GET.get("page")
+        postsPage = postsPaginator.get_page(pageNumber)
+
+        return render(request, "network/index.html", {
+            "page": postsPage
+        })
+    except:
+        messages.error(request, "Something went wrong")
+        return HttpResponseRedirect(reverse("index"))
 
 
 def login_view(request):
@@ -84,19 +96,6 @@ def new_post(request):
         messages.error(request, "Can't submit a blank post!")
         return HttpResponseRedirect(reverse("index"))
 # NEW POST VIEW ENDS
-
-
-# ALL POSTS VIEW STARTS
-@login_required(login_url="login")
-def all_posts(request):
-    # Return all Posts in Inverse Chrono-Order
-    try:
-        posts = Post.objects.all().order_by("-creation_date")
-        return JsonResponse([post.post_view() for post in posts], safe=False)
-    except:
-        messages.error(request, "Something went wrong")
-        return HttpResponseRedirect(reverse("index"))
-# ALL POSTS VIEW ENDS
 
 
 # PROFILE VIEW STARTS
