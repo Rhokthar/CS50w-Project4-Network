@@ -28,7 +28,7 @@
                 </li>
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a id="following-page-link" class="nav-link" href="#">Following</a>
+                        <a id="following-page-link" class="nav-link" href="{% url 'following_page' %}">Following</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
@@ -48,6 +48,12 @@
 
         <!-- BODY DIV STARTS -->
         <div class="body boxed-container margin-left-auto margin-right-auto">
+            <!-- DJANGO MESSAGES DISPLAYER STARTS -->
+            <div class="messages-container text-center">
+                {% for message in messages %}
+                    <span class="{{ message.tags }}-color">{{ message }}</span>
+                {% endfor %}
+            </div> <!-- DJANGO MESSAGES DISPLAYER ENDS -->
             {% block body %}
             {% endblock %}
         </div>

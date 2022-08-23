@@ -17,7 +17,7 @@ function AllPostsDisplayer()
             `;
 
             // Append Div
-            document.querySelector("#all-posts").append(postDiv);
+            document.querySelector("#all-posts-container").append(postDiv);
         });
    })
 }

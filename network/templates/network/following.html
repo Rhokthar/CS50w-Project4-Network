@@ -1,0 +1,39 @@
+{% extends "network/layout.html" %}
+
+{% block title %}
+Following
+{% endblock %}
+
+{% block body %}
+    <!-- FOLLOWING PAGE CONTENT STARTS -->
+    <div id="following-page" class="page-wrapper">
+         <!-- NEW POST STARTS -->
+         <div class="new-post-container width-100 flex-container vertical-row">
+            <h3>New Post</h3>
+            <form action="{% url 'new-post' %}" method="post">
+                {% csrf_token %}
+                <div class="flex-container vertical-row">
+                    <textarea id="new-post-text" name="new-post-text" placeholder="Write a new post..." autofocus></textarea>
+                    <input type="submit" value="New Post" class="button" />
+                </div>
+            </form>
+        </div>
+        <!-- NEW POST ENDS -->
+        
+        <h1>Followed Users' Posts</h1>
+
+        <!-- POSTS -->
+        <div class="following-posts-container">
+            {% for post in posts %}
+            <div class="post">
+                <h4>
+                    <a href="profile/{{ post.user.username }}">{{ post.user.username }}</a>
+                </h4>
+                <p>{{ post.post_content }}</p>
+                <span>{{ post.creation_date }}</span>
+                <span>Likes: {{ post.likes }}</span>
+            </div>
+            {% endfor %}
+        </div>
+    </div> <!-- FOLLOWING PAGE CONTENT ENDS -->
+{% endblock %}

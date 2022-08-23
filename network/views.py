@@ -1,11 +1,11 @@
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from django.http import JsonResponse
 
 from .models import *
 from .utils import *
@@ -144,3 +144,16 @@ def profile(request, profile_username):
        
         return HttpResponseRedirect(reverse("profile", kwargs={"profile_username": profile_username}))
 # PROFILE VIEW ENDS
+
+# FOLLOWING-PAGE VIEW STARTS
+@login_required(login_url="login")
+def following_page(request):
+    # Prendi gli utenti che followa chi va su questa pagina (request.user)
+    usersFollowed = request.user.following_list.all()
+    # Prendi i post degli utenti followati
+    posts = Post.objects.filter(user__in=usersFollowed).order_by("-creation_date")
+
+    return render(request, "network/following.html", {
+        "posts": posts
+    })
+# FOLLOWING-PAGE VIEW ENDS
