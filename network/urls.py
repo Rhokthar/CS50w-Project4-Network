@@ -10,5 +10,5 @@ urlpatterns = [
     
     path("new-post", views.new_post, name="new-post"),
     path("all-posts", views.all_posts, name="all-posts"),
-    path("<str:profile_username>", views.profile, name="profile")
+    path("profile/<str:profile_username>", views.profile, name="profile")
 ]
