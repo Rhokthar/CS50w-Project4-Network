@@ -1,7 +1,9 @@
 {% extends "network/layout.html" %}
 {% load static %}
 
-
+{% block script %}
+<script src="{% static 'network/js/index.js' %}"></script>
+{% endblock %}
 
 {% block body %}
     <!-- POST PAGE CONTENT STARTS -->
@@ -22,15 +24,22 @@
         <!-- NEW POST ENDS -->
 
         <!-- ALL POSTS VISUALIZATION STARTS -->
-        <div id="all-posts-container" class="flex-container vertical-row width-100">
+        <div id="posts-container" class="flex-container vertical-row width-100">
             {% for post in page.object_list %}
-            <div class="post">
-                <h4><a href="profile/{{post.user.username}}">{{post.user.username}}</a></h4>
-                <p>{{post.post_content}}</p>
-                <span>{{post.creation_date}}</span>
-                <span>Likes: {{post.likes}}</span>
+            <div id="post-{{ post.id }}">
+                <h4><a href="profile/{{post.user.username}}">{{ post.user.username }}</a></h4>
+                <p class="post-content">{{ post.post_content }}</p>
+                <textarea class="edit-post-text" name="edit-post-text">{{ post.post_content }}</textarea>
+                <span>{{ post.creation_date }}</span>
+                <span>Likes: {{ post.likes }}</span>
+                {% if post.user.username == user.username %}
+                    <button class="edit-btn" value="{{ post.id }}">Edit</button>
+                    <button class="save-edit-btn" value="{{ post.id }}">Save</button>
+                {% endif %}
             </div>
             {% endfor %}
+
+            <!-- POSTS PAGES LINKS STARTS -->
             <div class="posts-pages">
                 <nav aria-label="Page navigation example">
                     <ul class="pagination">
@@ -46,7 +55,7 @@
                         {% endif %}
                     </ul>
                 </nav>
-            </div>
+            </div> <!-- POSTS PAGES LINKS ENDS -->
         </div> <!-- ALL POSTS VISUALIZATION ENDS -->
     </div> <!-- POST PAGE CONTENT ENDS -->
 {% endblock %}

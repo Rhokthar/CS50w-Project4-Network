@@ -27,3 +27,12 @@ body a {
     color: var(--error-color);
 }
 /* MESSAGES COLORS ENDS */
+
+/* INDEX PAGE RULES STARTS */
+.edit-post-text {
+    display: none;
+}
+.save-edit-btn {
+    display: none;
+}
+/* INDEX PAGE RULES ENDS */

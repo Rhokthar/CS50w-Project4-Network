@@ -21,7 +21,7 @@ class Post(models.Model):
     # comment
     likes = models.IntegerField(default=0)
 
-    def post_view(self):
+    def serialize(self):
         return {
             "id": self.id,
             "user": self.user.username,

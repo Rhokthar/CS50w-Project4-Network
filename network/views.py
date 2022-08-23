@@ -1,3 +1,4 @@
+import json
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -6,6 +7,7 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import *
 from .utils import *
@@ -86,11 +88,15 @@ def new_post(request):
     postContent = request.POST["new-post-text"]
     
     # Check Passed Values
-    if postContent != None:
+    if postContent != "":
         # Try Create Post
-        user = User.objects.get(id=request.user.id)
-        Post.objects.create(user=user, post_content=postContent)
-        messages.success(request, "Post created successfully!")
+        try:
+            user = User.objects.get(id=request.user.id)
+            Post.objects.create(user=user, post_content=postContent)
+            messages.success(request, "Post created successfully!")
+        except:
+            messages.error(request, "Something went wrong")
+
         return HttpResponseRedirect(reverse("index"))
     else:
         messages.error(request, "Can't submit a blank post!")
@@ -156,3 +162,28 @@ def following_page(request):
         "posts": posts
     })
 # FOLLOWING-PAGE VIEW ENDS
+
+
+# EDIT-POST VIEW STARTS
+@csrf_exempt
+@login_required(login_url="login")
+def edit_post(request, post_ID):
+    # Check if Post Exists
+    try:
+        post = Post.objects.get(id=post_ID)
+    except:
+        messages.error(request, "Post not found")
+        return HttpResponseRedirect(reverse("index"))
+    
+    # Get Post Json
+    if request.method == "GET":
+        return JsonResponse(post.serialize())
+
+    # Update Post Content
+    if request.method == "PUT":
+        data = json.loads(request.body)
+        if data.get("post_content") is not None:
+            post.post_content = data["post_content"]
+        post.save()
+        return HttpResponse(status=204)
+# EDIT-POST VIEW ENDS
