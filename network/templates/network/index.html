@@ -2,48 +2,57 @@
 {% load static %}
 
 {% block script %}
-<script src="{% static 'network/js/index.js' %}"></script>
+<script src="{% static 'network/js/main.js' %}"></script>
 {% endblock %}
 
 {% block body %}
     <!-- POST PAGE CONTENT STARTS -->
-    <div id="posts-page" class="page-wrapper">
+    <div id="posts-page" class="posts-page-wrapper flex-container vertical-row align-center width-100">
         <h1>All Posts</h1>
 
         <!-- NEW POST STARTS -->
-        <div class="new-post-container width-100 flex-container vertical-row">
+        <div class="new-post-container width-50 flex-container vertical-row padding-all-s">
             <h3>New Post</h3>
             <form action="{% url 'new-post' %}" method="post">
                 {% csrf_token %}
-                <div class="flex-container vertical-row">
+                <!-- FORM TAGS WRAPPER STARTS -->
+                <div class="form-wrapper flex-container vertical-row align-end width-100">
                     <textarea id="new-post-text" name="new-post-text" placeholder="Write a new post..." autofocus></textarea>
-                    <input type="submit" value="New Post" class="button" />
-                </div>
+                    <input type="submit" value="New Post" class="new-post-btn width-20 margin-top-s" />
+                </div> <!-- FORM TAGS WRAPPER ENDS -->
             </form>
-        </div>
-        <!-- NEW POST ENDS -->
+        </div> <!-- NEW POST ENDS -->
 
-        <!-- ALL POSTS VISUALIZATION STARTS -->
+        <!-- POSTS CONTAINER VISUALIZATION STARTS -->
         <div id="posts-container" class="flex-container vertical-row width-100">
             {% for post in page.object_list %}
-            <div id="post-{{ post.id }}">
-                <h4><a href="profile/{{post.user.username}}">{{ post.user.username }}</a></h4>
-                <p class="post-content">{{ post.post_content }}</p>
+            <!-- SINGLE POST VISUALIZATION STARTS -->
+            <div id="post-{{ post.id }}" class="post flex-container vertical-row margin-all-s padding-all-s">
+                <div class="post-header flex-container row padding-left-xs">
+                    <h4>
+                        <a href="profile/{{post.user.username}}">{{ post.user.username }}</a>
+                    </h4>
+                    <span class="creation-date">{{ post.creation_date }}</span>
+                </div>
+                <p class="post-content padding-bottom-s padding-top-xs">{{ post.post_content }}</p>
                 <textarea class="edit-post-text" name="edit-post-text">{{ post.post_content }}</textarea>
-                <span>{{ post.creation_date }}</span>
-                <span class="likes">Likes: {{ post.likes }}</span>
-                {% if post.user.username == user.username %}
-                    <button class="edit-btn" value="{{ post.id }}">Edit</button>
-                    <button class="save-edit-btn" value="{{ post.id }}">Save</button>
-                {% endif %}
-                <button class="like-btn" value="{{ post.id }}">{% if post in user_liked_posts %}Unlike{% else %}Like{% endif %}</button>
-            </div>
+                <span class="likes padding-top-xs">Likes: {{ post.likes }}</span>
+                <div class="buttons-container flex-container padding-top-s">
+                    <div class="buttons-wrapper flex-container row width-20 padding-left-s">
+                        {% if post.user.username == user.username %}
+                            <button class="edit-btn width-33" value="{{ post.id }}">Edit</button>
+                            <button class="save-edit-btn width-33" value="{{ post.id }}">Save</button>
+                        {% endif %}
+                        <button class="like-btn width-33" value="{{ post.id }}">{% if post in user_liked_posts %}Unlike{% else %}Like{% endif %}</button>
+                    </div>
+                </div>
+            </div> <!-- SINGLE POST VISUALIZATION ENDS -->
             {% endfor %}
 
             <!-- POSTS PAGES LINKS STARTS -->
             <div class="posts-pages">
                 <nav aria-label="Page navigation example">
-                    <ul class="pagination">
+                    <ul class="pagination flex-container row justify-center width-100">
                         {% if page.has_previous %}
                         <li class="page-item"><a class="page-link" href="{% url 'index' %}?page={{ page.previous_page_number }}">Previous</a></li>
                         <li class="page-item"><a class="page-link" href="{% url 'index' %}?page={{ page.previous_page_number }}">{{ page.previous_page_number }}</a></li>
@@ -57,6 +66,6 @@
                     </ul>
                 </nav>
             </div> <!-- POSTS PAGES LINKS ENDS -->
-        </div> <!-- ALL POSTS VISUALIZATION ENDS -->
+        </div> <!-- POSTS CONTAINER VISUALIZATION STARTS -->
     </div> <!-- POST PAGE CONTENT ENDS -->
 {% endblock %}

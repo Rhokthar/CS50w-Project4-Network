@@ -15,30 +15,30 @@
     <body>
         <!-- NAVBAR STARTS -->
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="{% url 'index' %}">Network</a>  
+            <a id="navbar-brand" class="navbar-brand" href="{% url 'index' %}">Network</a>  
             <div>
             <ul class="navbar-nav mr-auto">
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a id="profile-page-link" class="nav-link" href="{% url 'profile' user.username %}"><strong>{{ user.username }}</strong></a>
+                        <a id="profile-page-link" class="nav-link {{ profileActive }}" href="{% url 'profile' user.username %}"><strong>{{ user.username }}</strong></a>
                     </li>
                 {% endif %}
                 <li class="nav-item">
-                <a id="posts-page-link" class="nav-link" href="{% url 'index' %}">All Posts</a>
+                <a id="posts-page-link" class="nav-link {{ indexActive }}" href="{% url 'index' %}">All Posts</a>
                 </li>
                 {% if user.is_authenticated %}
                     <li class="nav-item">
-                        <a id="following-page-link" class="nav-link" href="{% url 'following-page' %}">Following</a>
+                        <a id="following-page-link" class="nav-link {{ followingActive }}" href="{% url 'following-page' %}">Following</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'logout' %}">Log Out</a>
                     </li>
                 {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'login' %}">Log In</a>
+                        <a id="login-link" class="nav-link {{ loginActive }}" href="{% url 'login' %}">Log In</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'register' %}">Register</a>
+                        <a id="register-link" class="nav-link {{ registerActive }}" href="{% url 'register' %}">Register</a>
                     </li>
                 {% endif %}
             </ul>
@@ -51,7 +51,7 @@
             <!-- DJANGO MESSAGES DISPLAYER STARTS -->
             <div class="messages-container text-center">
                 {% for message in messages %}
-                    <span class="{{ message.tags }}-color">{{ message }}</span>
+                    <span class="message {{ message.tags }}-color">{{ message }}</span>
                 {% endfor %}
             </div> <!-- DJANGO MESSAGES DISPLAYER ENDS -->
             {% block body %}

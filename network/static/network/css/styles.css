@@ -2,6 +2,9 @@
 :root {
     --error-color: red;
     --success-color: green;
+    --main-color: rgba(131, 238, 255);
+    --side-color: rgba(173, 216, 230, 0.5);
+    --shadow-color: rgba(0, 0, 0, 0.2);
 }
 
 
@@ -9,12 +12,34 @@
 body a {
     font-size: 1.7rem;
 }
+h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+}
+h2 {
+    font-size: 2.5rem;
+    font-weight: 650;
+}
+h3 {
+    font-size: 2rem;
+    font-weight: 600;
+}
+span {
+    font-size: 1.4rem;
+}
+p {
+    margin: 0;
+    font-size: 1.3rem;
+}
 /* GENERAL RULES ENDS */
 
 
 /* LAYOUT RULES STARTS */
 .navbar-brand {
     font-size: 2.2rem;
+}
+.message {
+    font-size: 2rem;
 }
 /* LAYOUT RULES ENDS */
 
@@ -28,11 +53,103 @@ body a {
 }
 /* MESSAGES COLORS ENDS */
 
-/* INDEX PAGE RULES STARTS */
+
+/* LOGIN & REGISTER PAGE RULES STARTS */
+.login-page-container,
+.register-page-container {
+    border: 1px solid var(--shadow-color);
+}
+.form-group {
+    width: 50%;
+    margin: 0.5rem;
+}
+.form-control {
+    font-size: 1.4rem;
+}
+.btn {
+    font-size: 1.3rem;
+}
+/* LOGIN & REGISTER PAGE RULES ENDS */
+
+
+/* INDEX, PROFILE, FOLLOWING PAGES RULES STARTS */
 .edit-post-text {
     display: none;
+    width: 100%;
+    font-size: 1.5rem;
+    padding: 0.5rem;
+    resize: none;
+    border: 1px solid var(--main-color);
+    transition: 0.3s;
 }
 .save-edit-btn {
     display: none;
 }
-/* INDEX PAGE RULES ENDS */
+#new-post-text {
+    width: 100%;
+    height: 15vh;
+    font-size: 1.5rem;
+    padding: 0.5rem;
+    resize: none;
+    border: 1px solid var(--main-color);
+    transition: 0.3s;
+}
+#new-post-text:focus,
+.edit-post-text:focus {
+    outline: none!important;
+    border: 2px solid var(--main-color);
+    box-shadow: 0 0 1rem var(--main-color);
+
+}
+/* .new-post-btn {
+    font-size: 1.3rem;
+} */
+.post {
+    border: 1px solid var(--main-color);
+    box-shadow: 0 0 0.8rem var(--side-color);
+}
+.post-header {
+    gap: 1rem;
+}
+.post p {
+    font-size: 1.5rem;
+    border-bottom: 1px solid var(--side-color);
+}
+.post .creation-date {
+    color: rgba(10, 10, 10, 0.3);
+    font-size: 1.2rem;
+}
+.buttons-wrapper {
+    gap: 1rem;
+}
+/* .buttons-wrapper * {
+    font-size: 1.3rem;
+} */
+.new-post-btn,
+.edit-btn,
+.like-btn,
+.save-edit-btn,
+#follow-unfollow-btn {
+    font-size: 1.3rem;
+    border: 1px solid var(--main-color);
+    background-color: var(--side-color);
+    box-shadow: 0 0 0.5rem var(--shadow-color);
+    transition: 0.3s;
+}
+.new-post-btn:hover,
+.edit-btn:hover,
+.like-btn:hover,
+.save-edit-btn:hover,
+#follow-unfollow-btn:hover  {
+    border: 1px solid black;
+    background-color: var(--main-color);
+    box-shadow: 0 0 1rem var(--main-color);
+}
+.new-post-btn:focus,
+.edit-btn:focus,
+.like-btn:focus,
+.save-edit-btn:focus,
+#follow-unfollow-btn:focus {
+    outline: none!important;
+}
+/* INDEX, PROFILE, FOLLOWING PAGES RULES ENDS */
