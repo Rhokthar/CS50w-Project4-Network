@@ -1,44 +1,85 @@
 {% extends "network/layout.html" %}
+{% load static %}
 
-{% block title %}{% endblock %}
+{% block title %}Profile Page{% endblock %}
+
+{% block script %}
+<script src="{% static 'network/js/main.js' %}"></script>
+{% endblock %}
 
 {% block body %}
     <!-- PROFILE PAGE CONTENT STARTS -->
-    <div id="profile-page" class="page-wrapper">
-        <!-- Profile Username -->
-        <h1> {{ username }} </h1>
-        
-        <!-- Followers & Following -->
-        <div id="followers-following">
-            <span>Followers: {{ followers.count }}</span>
-            <span>Following: {{ following.count }}</span>
+    <div id="profile-page" class="profile-page-wrapper flex-container vertical-row align-center width-100">
+        <div class="profile-page-header flex-container vertical-row align-center width-100 padding-top-s">
+            <!-- Profile Username -->
+            <h1> {{ username }} </h1>
+            
+            <!-- Followers & Following -->
+            <div id="followers-following padding-bottom-s">
+                <span>Followers: {{ followers.count }} - </span>
+                <span>Following: {{ following.count }}</span>
+            </div>
+            <!-- FOLLOW/UNFOLLOW BUTTON STARTS -->
+            {% if user.username != username %}
+                <div class="padding-top-s flex-container justify-center width-100">
+                    <form action="/profile/{{ username }}" method="post" class="flex-container justify-center width-20">
+                        {% csrf_token %}
+                        <button id="follow-unfollow-btn" class="width-33">
+                            {% if follow_status %}
+                                Unfollow
+                            {% else %}
+                                Follow
+                            {% endif %}
+                        </button>
+                    </form>
+                </div>
+            {% endif %} <!-- FOLLOW/UNFOLLOW BUTTON ENDS -->
         </div>
 
-        <!-- User Posts -->
-        <div id="user-posts">
+        <!-- ALL USER'S POSTS VISUALIZATION STARTS -->
+        <div id="user-posts-container" class="flex-container vertical-row width-100 padding-top-m">
             <h2>{{ username }} Posts</h2>
-            {% for post in posts %}
-            <div class="user-post">
-                <h4>{{ post.user.username }}</h4>
-                <p>{{ post.post_content }}</p>
-                <span>{{ post.creation_date }}</span>
-                <span>Likes: {{ post.likes }}</span>
-            </div>
+            {% for post in page.object_list %}
+            <!-- SINGLE POST VISUALIZATION STARTS -->
+            <div id="post-{{ post.id }}" class="post flex-container vertical-row margin-all-s padding-all-s">
+                <div class="post-header flex-container row padding-left-xs">
+                    <h4>
+                        <a href="profile/{{post.user.username}}">{{ post.user.username }}</a>
+                    </h4>
+                    <span class="creation-date">{{ post.creation_date }}</span>
+                </div>
+                <p class="post-content padding-bottom-s padding-top-xs">{{ post.post_content }}</p>
+                <textarea class="edit-post-text" name="edit-post-text">{{ post.post_content }}</textarea>
+                <span class="likes padding-top-xs">Likes: {{ post.likes }}</span>
+                <div class="buttons-container flex-container padding-top-s">
+                    <div class="buttons-wrapper flex-container row width-20 padding-left-s">
+                        {% if post.user.username == user.username %}
+                            <button class="edit-btn width-33" value="{{ post.id }}">Edit</button>
+                            <button class="save-edit-btn width-33" value="{{ post.id }}">Save</button>
+                        {% endif %}
+                        <button class="like-btn width-33" value="{{ post.id }}">{% if post in user_liked_posts %}Unlike{% else %}Like{% endif %}</button>
+                    </div>
+                </div>
+            </div> <!-- SINGLE POST VISUALIZATION ENDS -->
             {% endfor %}
-        </div>
-        {% if user.username != username %}
-            <form action="/profile/{{ username }}" method="post">
-                {% csrf_token %}
-                <button id="follow-unfollow-btn">
-                    {% if follow_status %}
-                        Unfollow
-                    {% else %}
-                        Follow
-                    {% endif %}
-                </button>
-            </form>
-        {% endif %}
-        
-        <!-- FOLLOW/UNFOLLOW BUTTON -->
+        </div> <!-- ALL USER'S POSTS VISUALIZATION ENDS -->
+
+        <!-- POSTS PAGES LINKS STARTS -->
+            <div class="posts-pages">
+                <nav aria-label="Page navigation example">
+                    <ul class="pagination flex-container row justify-center width-100">
+                        {% if page.has_previous %}
+                        <li class="page-item"><a class="page-link" href="{% url 'index' %}?page={{ page.previous_page_number }}">Previous</a></li>
+                        <li class="page-item"><a class="page-link" href="{% url 'index' %}?page={{ page.previous_page_number }}">{{ page.previous_page_number }}</a></li>
+                        {% endif %}
+                        <li class="page-item active"><a class="page-link" href="{% url 'index' %}?page={{ page.number }}">{{ page.number }}</a></li>
+                
+                        {% if page.has_next %}
+                        <li class="page-item"><a class="page-link" href="{% url 'index' %}?page={{ page.next_page_number }}">{{ page.next_page_number }}</a></li>
+                        <li class="page-item"><a class="page-link" href="{% url 'index' %}?page={{ page.next_page_number }}">Next</a></li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div> <!-- POSTS PAGES LINKS ENDS -->
     </div> <!-- PROFILE PAGE CONTENT ENDS -->
 {% endblock %}

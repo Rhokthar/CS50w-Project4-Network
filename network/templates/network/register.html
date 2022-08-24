@@ -1,30 +1,39 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
-
+<!-- REGISTER PAGE CONTENT STARTS -->
+<div class="register-page-container flex-container vertical-row align-center width-33 margin-left-auto margin-right-auto margin-top-m padding-all-s">
     <h2>Register</h2>
-
+    <!-- ERROR MESSAGE STARTS -->
     {% if message %}
         <div>{{ message }}</div>
-    {% endif %}
+    {% endif %} <!-- ERROR MESSAGE ENDS -->
 
-    <form action="{% url 'register' %}" method="post">
-        {% csrf_token %}
-        <div class="form-group">
-            <input class="form-control" autofocus type="text" name="username" placeholder="Username">
-        </div>
-        <div class="form-group">
-            <input class="form-control" type="email" name="email" placeholder="Email Address">
-        </div>
-        <div class="form-group">
-            <input class="form-control" type="password" name="password" placeholder="Password">
-        </div>
-        <div class="form-group">
-            <input class="form-control" type="password" name="confirmation" placeholder="Confirm Password">
-        </div>
-        <input class="btn btn-primary" type="submit" value="Register">
-    </form>
+    <!-- FORM CONTAINER STARTS -->
+    <div class="form-container width-100 padding-top-s padding-bottom-s">
+        <form action="{% url 'register' %}" method="post">
+            {% csrf_token %}
+            <!-- FORM TAGS WRAPPER STARTS -->
+            <div class="form-wrapper flex-container vertical-row align-center width-100">
+                <div class="form-group">
+                    <input class="form-control" autofocus type="text" name="username" placeholder="Username">
+                </div>
+                <div class="form-group">
+                    <input class="form-control" type="email" name="email" placeholder="Email Address">
+                </div>
+                <div class="form-group">
+                    <input class="form-control" type="password" name="password" placeholder="Password">
+                </div>
+                <div class="form-group">
+                    <input class="form-control" type="password" name="confirmation" placeholder="Confirm Password">
+                </div>
+                <input class="btn btn-primary margin-top-s width-20" type="submit" value="Register">
+            </div> <!-- FORM TAGS WRAPPER ENDS -->
+        </form>
+    </div> <!-- FORM CONTAINER ENDS -->
 
-    Already have an account? <a href="{% url 'login' %}">Log In here.</a>
-
+    <!-- LOGIN CTA STARTS -->
+    <p>Already have an account?</p>
+    <a href="{% url 'login' %}">Log In here.</a> <!-- LOGIN CTA ENDS -->
+</div> <!-- REGISTER PAGE CONTENT ENDS -->
 {% endblock %}

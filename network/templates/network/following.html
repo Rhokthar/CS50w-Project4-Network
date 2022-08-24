@@ -1,39 +1,77 @@
 {% extends "network/layout.html" %}
+{% load static %}
 
 {% block title %}
 Following
 {% endblock %}
 
+{% block script %}
+<script src="{% static 'network/js/main.js' %}"></script>
+{% endblock %}
+
 {% block body %}
     <!-- FOLLOWING PAGE CONTENT STARTS -->
-    <div id="following-page" class="page-wrapper">
-         <!-- NEW POST STARTS -->
-         <div class="new-post-container width-100 flex-container vertical-row">
+    <div id="following-page" class="following-page-wrapper flex-container vertical-row align-center width-100">
+        <h1>Followed Users' Posts</h1>
+
+        <!-- NEW POST STARTS -->
+        <div class="new-post-container width-50 flex-container vertical-row padding-all-s">
             <h3>New Post</h3>
             <form action="{% url 'new-post' %}" method="post">
                 {% csrf_token %}
-                <div class="flex-container vertical-row">
+                <!-- FORM TAGS WRAPPER STARTS -->
+                <div class="form-wrapper flex-container vertical-row align-end width-100">
                     <textarea id="new-post-text" name="new-post-text" placeholder="Write a new post..." autofocus></textarea>
-                    <input type="submit" value="New Post" class="button" />
-                </div>
+                    <input type="submit" value="New Post" class="new-post-btn width-20 margin-top-s" />
+                </div> <!-- FORM TAGS WRAPPER ENDS -->
             </form>
-        </div>
-        <!-- NEW POST ENDS -->
-        
-        <h1>Followed Users' Posts</h1>
+        </div> <!-- NEW POST ENDS -->
 
-        <!-- POSTS -->
-        <div class="following-posts-container">
-            {% for post in posts %}
-            <div class="post">
-                <h4>
-                    <a href="profile/{{ post.user.username }}">{{ post.user.username }}</a>
-                </h4>
-                <p>{{ post.post_content }}</p>
-                <span>{{ post.creation_date }}</span>
-                <span>Likes: {{ post.likes }}</span>
-            </div>
+        <!-- POSTS STARTS -->
+        <div id="following-posts-container" class="following-posts-container flex-container vertical-row width-100">
+            {% for post in page.object_list %}
+            <!-- SINGLE POST VISUALIZATION STARTS -->
+            <div id="post-{{ post.id }}" class="post flex-container vertical-row margin-all-s padding-all-s">
+                <div class="post-header flex-container row padding-left-xs">
+                    <h4>
+                        <a href="profile/{{post.user.username}}">{{ post.user.username }}</a>
+                    </h4>
+                    <span class="creation-date">{{ post.creation_date }}</span>
+                </div>
+                <p class="post-content padding-bottom-s padding-top-xs">{{ post.post_content }}</p>
+                <textarea class="edit-post-text" name="edit-post-text">{{ post.post_content }}</textarea>
+                <span class="likes padding-top-xs">Likes: {{ post.likes }}</span>
+                <div class="buttons-container flex-container padding-top-s">
+                    <div class="buttons-wrapper flex-container row width-20 padding-left-s">
+                        {% if post.user.username == user.username %}
+                            <button class="edit-btn width-33" value="{{ post.id }}">Edit</button>
+                            <button class="save-edit-btn width-33" value="{{ post.id }}">Save</button>
+                        {% endif %}
+                        <button class="like-btn width-33" value="{{ post.id }}">{% if post in user_liked_posts %}Unlike{% else %}Like{% endif %}</button>
+                    </div>
+                </div>
+            </div> <!-- SINGLE POST VISUALIZATION ENDS -->
+            {% empty %}
+            <span class="text-center message padding-bottom-s padding-top-m">You're not following any user yet! Try to follow someone to see their posts in this section!</span>
             {% endfor %}
-        </div>
+        </div> <!-- POSTS ENDS -->
+
+        <!-- POSTS PAGES LINKS STARTS -->
+        <div class="posts-pages">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    {% if page.has_previous %}
+                    <li class="page-item"><a class="page-link" href="{% url 'following-page' %}?page={{ page.previous_page_number }}">Previous</a></li>
+                    <li class="page-item"><a class="page-link" href="{% url 'following-page' %}?page={{ page.previous_page_number }}">{{ page.previous_page_number }}</a></li>
+                    {% endif %}
+                    <li class="page-item active"><a class="page-link" href="{% url 'following-page' %}?page={{ page.number }}">{{ page.number }}</a></li>
+            
+                    {% if page.has_next %}
+                    <li class="page-item"><a class="page-link" href="{% url 'following-page' %}?page={{ page.next_page_number }}">{{ page.next_page_number }}</a></li>
+                    <li class="page-item"><a class="page-link" href="{% url 'following-page' %}?page={{ page.next_page_number }}">Next</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div> <!-- POSTS PAGES LINKS ENDS -->
     </div> <!-- FOLLOWING PAGE CONTENT ENDS -->
 {% endblock %}

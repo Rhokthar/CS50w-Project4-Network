@@ -8,6 +8,7 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
+import re
 
 from .models import *
 from .utils import *
@@ -34,7 +35,8 @@ def index(request):
 
         return render(request, "network/index.html", {
             "page": postsPage,
-            "user_liked_posts": user.liked_posts.all()
+            "user_liked_posts": user.liked_posts.all(),
+            "indexActive": "active"
         })
     except:
         messages.error(request, "Something went wrong")
@@ -47,18 +49,26 @@ def login_view(request):
         # Attempt to sign user in
         username = request.POST["username"]
         password = request.POST["password"]
+        next = request.POST["next"]
+            
         user = authenticate(request, username=username, password=password)
 
         # Check if authentication successful
         if user is not None:
             login(request, user)
-            return HttpResponseRedirect(reverse("index"))
+            if (re.match(r"\/login\?next=\/.+", next)):
+                url = re.search(r"next=\/(.+)", next)
+                return HttpResponseRedirect(reverse(url.group(1)))
+            else:
+                return HttpResponseRedirect(reverse("index"))
         else:
             return render(request, "network/login.html", {
                 "message": "Invalid username and/or password."
             })
     else:
-        return render(request, "network/login.html")
+        return render(request, "network/login.html", {
+            "loginActive": "active"
+        })
 
 @login_required(login_url='login')
 def logout_view(request):
@@ -90,7 +100,9 @@ def register(request):
         login(request, user)
         return HttpResponseRedirect(reverse("index"))
     else:
-        return render(request, "network/register.html")
+        return render(request, "network/register.html", {
+            "registerActive": "active"
+        })
 
 
 # NEW POST VIEW STARTS
@@ -124,6 +136,16 @@ def profile(request, profile_username):
     visitingUser = User.objects.get(username=request.user.username)
     userPosts = Post.objects.filter(user=profileVisitedUser).order_by("-creation_date")
     followStatus = IsFollower(request, profileVisitedUser)
+    postsPaginator = Paginator(userPosts, 10)
+    pageNumber = request.GET.get("page")
+    postsPage = postsPaginator.get_page(pageNumber)
+
+    # Check If Visiting User & Visited User are the Same User
+    # (Just for NavBar Active Link rapresentation)
+    if profileVisitedUser == visitingUser:
+        profileActive = "active"
+    else:
+        profileActive = ""
     
     # Check if Users Exists
     if (profileVisitedUser == None or visitingUser == None):
@@ -136,8 +158,9 @@ def profile(request, profile_username):
             "username": profile_username,
             "followers": profileVisitedUser.followers_list,
             "following": profileVisitedUser.following_list,
-            "posts": userPosts,
-            "follow_status": followStatus
+            "page": postsPage,
+            "follow_status": followStatus,
+            "profileActive": profileActive
         })
     
     # Method -> POST -> Follow/Unfollow Clicked
@@ -169,9 +192,13 @@ def following_page(request):
     usersFollowed = request.user.following_list.all()
     # Prendi i post degli utenti followati
     posts = Post.objects.filter(user__in=usersFollowed).order_by("-creation_date")
+    postsPaginator = Paginator(posts, 10)
+    pageNumber = request.GET.get("page")
+    postsPage = postsPaginator.get_page(pageNumber)
 
     return render(request, "network/following.html", {
-        "posts": posts
+        "page": postsPage,
+        "followingActive": "active"
     })
 # FOLLOWING-PAGE VIEW ENDS
 

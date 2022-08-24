@@ -1,24 +1,35 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
-
+<!-- LOGIN PAGE CONTENT STARTS -->
+<div class="login-page-container flex-container vertical-row align-center width-33 margin-left-auto margin-right-auto margin-top-m padding-all-s">
+        
     <h2>Login</h2>
-
+    <!-- ERROR MESSAGE STARTS -->
     {% if message %}
-        <div>{{ message }}</div>
-    {% endif %}
+        <span class="error-color text-center">{{ message }}</span>
+    {% endif %} <!-- ERROR MESSAGE ENDS -->
 
-    <form action="{% url 'login' %}" method="post">
-        {% csrf_token %}
-        <div class="form-group">
-            <input autofocus class="form-control" type="text" name="username" placeholder="Username">
-        </div>
-        <div class="form-group">
-            <input class="form-control" type="password" name="password" placeholder="Password">
-        </div>
-        <input class="btn btn-primary" type="submit" value="Login">
-    </form>
+    <!-- FORM CONTAINER STARTS -->
+    <div class="form-container width-100 padding-top-s padding-bottom-s">
+        <form action="{% url 'login' %}" method="post">
+            {% csrf_token %}
+            <!-- FORM TAGS WRAPPER STARTS -->
+            <div class="form-wrapper flex-container vertical-row align-center width-100">
+                <div class="form-group">
+                    <input autofocus class="form-control" type="text" name="username" placeholder="Username" />
+                </div>
+                <div class="form-group">
+                    <input class="form-control" type="password" name="password" placeholder="Password" />
+                </div>
+                <input type="hidden" name="next" value="{{ request.get_full_path }}" />
+                <input class="btn btn-primary margin-top-s width-20" type="submit" value="Login" />
+            </div> <!-- FORM TAGS WRAPPER ENDS -->                 
+        </form>
+    </div> <!-- FORM CONTAINER ENDS -->
 
-    Don't have an account? <a href="{% url 'register' %}">Register here.</a>
-
+    <!-- REGISTER CTA STARTS -->
+    <p>Don't have an account?</p>
+    <a href="{% url 'register' %}">Register here!</a> <!-- REGISTER CTA ENDS -->
+</div> <!-- LOGIN PAGE CONTENT ENDS -->
 {% endblock %}

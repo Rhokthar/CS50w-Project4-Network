@@ -1,4 +1,9 @@
 document.addEventListener("DOMContentLoaded", function() {
+    PostButtonsEventsHandler();
+});
+
+function PostButtonsEventsHandler()
+{
     // Select Buttons
     let editButtonsArray = document.querySelectorAll(".edit-btn");
     let saveButtonsArray = document.querySelectorAll(".save-edit-btn");
@@ -55,7 +60,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // Add OnClick Event to Like Buttons
         likeButtonsArray[i].onclick = () => {
-            console.log(likeButtonsArray[i].value);
             fetch(`/like-post/${likeButtonsArray[i].value}`, {
                 method: "PUT"
             })
@@ -79,4 +83,4 @@ document.addEventListener("DOMContentLoaded", function() {
             }, 200);
         }
     }
-}); 
+}
